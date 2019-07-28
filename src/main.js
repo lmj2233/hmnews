@@ -5,7 +5,7 @@ import store from './store'
 // 导入Vant
 import Vant from 'vant'
 import 'vant/lib/index.css'
-
+import 'amfe-flexible/index.min.js'
 Vue.use(Vant)
 Vue.config.productionTip = false
 
