@@ -8,14 +8,16 @@
 
         <van-field v-model="user.code" label="验证码" placeholder="请输入验证码" type="password" />
       </van-cell-group>
-      <van-button type="info" block @click.prevent="login">登录</van-button>
+      <van-button type="info" block @click.prevent="handelLogin">登录</van-button>
     </form>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import { login } from '@/api/user.js'
 export default {
+  name: 'loginindex',
   data () {
     return {
       user: {
@@ -25,13 +27,15 @@ export default {
     }
   },
   methods: {
-    async login () {
-      const res = await axios({
-        method: 'POST',
-        url: 'http://ttapi.research.itcast.cn/app/v1_0/authorizations',
-        data: this.user
-      })
-      console.log(res)
+    async handelLogin () {
+      try {
+        const data = await login(this.user)
+        console.log(data)
+        // 更新token
+        this.$store.commit('setUsertoken', data)
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
