@@ -1,0 +1,12 @@
+.home .channels-tabs {
+  margin-top: 100px;
+}
+.home .channels-tabs .van-tabs__wrap {
+  z-index: 1;
+  position: fixed;
+  top: 92px;
+}
+.home .channels-tabs .van-tabs__content {
+  margin-bottom: 92px;
+  padding-top: 92px;
+}

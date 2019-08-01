@@ -19,6 +19,9 @@
 <script>
 // import axios from 'axios'
 import { login } from '@/api/user.js'
+// import { setUser } from '@/utils/auth.js'
+import { mapMutations } from 'vuex'
+
 export default {
   name: 'loginindex',
   data () {
@@ -48,6 +51,7 @@ export default {
           console.log(data)
           // 登录时，重新获取token，更新token
           this.$store.commit('setUsertoken', data)
+          console.log('----')
           // 登录成功，跳转到首页
           this.$router.push({ path: '/' })
         } catch (error) {

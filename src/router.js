@@ -1,13 +1,24 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/views/home'
-import Login from '@/views/login'
+// 懒加载，只有大哥跳转到该组件，才加载对应的该组件
+// import Home from '@/views/home'
+// import Login from '@/views/login'
+// import { homedir } from 'os'
 Vue.use(Router)
 
 export default new Router({
   routes: [
-    { path: '/', name: 'home', component: Home },
-    { path: '/login', name: 'login', component: Login }
+    {
+      path: '/',
+      // name: 'home',
+      // component: Home,
+      component: () =>
+        import('@/views/tabbar-layout'),
+      children: [
+        { path: '/', name: 'home', component: () => import('@/views/home') }
+      ]
+    },
+    { path: '/login', name: 'login', component: () => import('@/views/login') }
 
   ]
 })

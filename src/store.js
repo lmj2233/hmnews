@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // 导入 本地存储的token *代表一切
-import * as auth from '@/api/auth.js'
+import * as auth from '@/utils/auth.js'
 Vue.use(Vuex)
 
 // 导出store
