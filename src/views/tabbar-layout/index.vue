@@ -6,9 +6,9 @@
     </keep-alive>
 
     <!-- 底部标签栏 tabbar -->
-    <van-tabbar v-model="active">
-      <van-tabbar-item icon="home-o">首页</van-tabbar-item>
-      <van-tabbar-item icon="friends-o">我的</van-tabbar-item>
+    <van-tabbar v-model="active" :route="true">
+      <van-tabbar-item icon="home-o" to="/">首页</van-tabbar-item>
+      <van-tabbar-item icon="friends-o" to="/mine">{{$store.state.user? '我的': '未登录'}}</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>

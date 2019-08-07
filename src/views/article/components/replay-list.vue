@@ -23,7 +23,7 @@
     <!-- 这条评论的回复列表 -->
     <comment-list :source="commentTop.com_id.toString()" :isComment="false"></comment-list>
     <!-- 发布评论 -->
-    <add-comment class="add-comment" :target="commentTop.com_id.toString()" :article="article_Id"></add-comment>
+    <add-comment class="add-comment" :target="commentTop.com_id.toString()" :art_id="article_Id"></add-comment>
   </van-popup>
 </template>
 
@@ -60,7 +60,7 @@ export default {
     eventBus.$on('isShow', item => {
       this.isShow = true
       this.commentTop = item
-      // console.log(item)'
+      console.log(item)
     })
   },
   //  清除组件缓存

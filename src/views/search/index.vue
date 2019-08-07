@@ -100,6 +100,8 @@ export default {
     },
     onCancel () {
       console.log('cancel')
+      // 跳转回首页
+      this.$router.push({ name: 'home' })
     }
   }
 }

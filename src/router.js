@@ -15,12 +15,16 @@ export default new Router({
       component: () =>
         import('@/views/tabbar-layout'),
       children: [
-        { path: '/', name: 'home', component: () => import('@/views/home') }
+        { path: '/', name: 'home', component: () => import('@/views/home') },
+        { path: '/mine', name: 'mine', component: () => import('@/views/mine') }
+
       ]
     },
     { path: '/login', name: 'login', component: () => import('@/views/login') },
     { path: '/search', name: 'search', component: () => import('@/views/search') },
     { path: '/search-result/:queryText', name: 'search-result', component: () => import('@/views/search/search-result.vue') },
-    { path: '/article/:articleId', name: 'article', component: () => import('@/views/article') }
+    { path: '/article/:articleId', name: 'article', component: () => import('@/views/article') },
+    { path: '/user-profile', name: 'user-profile', component: () => import('@/views/mine/components/user-profile.vue') }
+
   ]
 })
