@@ -90,3 +90,23 @@ export const editCurrentUserProfile = ({
     }
   })
 }
+
+// 修改用户头像
+/**
+ *  photo	file	否		头像
+    id_card_front	file	否		身份证正面照片
+    id_card_back	file	否		身份证背面照片
+    id_card_handheld	file	否		手持身份证照片
+    注意：
+      Content-Type	multipart/form-data	是
+      需要form-data类型
+ */
+export const uploadUserPhoto = (name, file) => {
+  const formData = new FormData()
+  formData.append(name, file)
+  return request({
+    method: 'PATCH',
+    url: `/app/v1_0/user/photo`,
+    data: formData
+  })
+}

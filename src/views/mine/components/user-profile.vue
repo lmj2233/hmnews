@@ -16,7 +16,7 @@
         </div>
       </van-cell>
       <van-cell is-link title="昵称" :value="user.name" />
-      <van-cell is-link title="介绍" value="内容" />
+      <van-cell is-link title="介绍" :value="user.intro" />
     </van-cell-group>
 
     <van-cell-group>
@@ -25,7 +25,7 @@
     </van-cell-group>
 
     <!-- 使用对话框组件 -->
-    <upload-photo v-model="isUploadPhotoShow"></upload-photo>
+    <upload-photo v-model="isUploadPhotoShow" @setBase64Success="handleSetSuccess" @upload-success="handleUploadSuccess"></upload-photo>
   </div>
 </template>
 
@@ -42,7 +42,9 @@ export default {
   data () {
     return {
       user: {},
-      isUploadPhotoShow: false
+      //   默认关闭对话框
+      isUploadPhotoShow: false,
+      base64Img: null
     }
   },
 
@@ -51,14 +53,28 @@ export default {
   },
 
   methods: {
+    //  更新图片 url格式的图片
+    handleUploadSuccess (photo) {
+      this.user.photo = photo
+    },
+    // base64图片格式
+    handleSetSuccess (base64Img) {
+    //   this.base64Img = base64Img
+    },
     // 保存
     async handleSave () {
       console.log('----')
       // 名字和之前的一样报错
-      await editCurrentUserProfile({
+      try {
+        await editCurrentUserProfile({
         // name: 'kjajjlwain'
-      })
-      console.log('===')
+          photo: this.user.photo
+        })
+        console.log('===')
+        this.$toast('修改成功')
+      } catch (error) {
+        console.dir(error)
+      }
     },
     // 获取当前用户信息
     async loadUserProfile () {
