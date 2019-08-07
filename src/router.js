@@ -18,7 +18,9 @@ export default new Router({
         { path: '/', name: 'home', component: () => import('@/views/home') }
       ]
     },
-    { path: '/login', name: 'login', component: () => import('@/views/login') }
-
+    { path: '/login', name: 'login', component: () => import('@/views/login') },
+    { path: '/search', name: 'search', component: () => import('@/views/search') },
+    { path: '/search-result/:queryText', name: 'search-result', component: () => import('@/views/search/search-result.vue') },
+    { path: '/article/:articleId', name: 'article', component: () => import('@/views/article') }
   ]
 })

@@ -1,10 +1,13 @@
 <template>
   <div class="home">
     <!-- 导航 -->
-    <van-nav-bar title="首页" fixed />
+    <van-nav-bar title="首页" fixed @click.native="$router.push({name:'search'})" />
     <!-- 标签栏 tab -->
-    <van-tabs v-model="activeIndex" class="channels-tabs">
-
+    <van-tabs v-model="activeChannelIndex" class="channels-tabs" @change="handleChangeTab" :lazy-render="false">
+      <!-- 自定义内容 右按钮 -->
+      <div slot="nav-right" class="wap--nav" @click="showChannelManager">
+        <van-icon name="wap-nav" />
+      </div>
       <van-tab :title="item.name" v-for="item in channels" :key="item.id">
         <!-- 列表数据必须要放到刷新标签里面 -->
         <!-- <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
@@ -13,16 +16,26 @@
           </van-list>
         </van-pull-refresh>-->
 
-        <van-pull-refresh v-model="item.downPullLoading" @refresh="onRefresh" :success-text="item.successRefreshText">
+        <van-pull-refresh
+          v-model="item.downPullLoading"
+          @refresh="onRefresh"
+          :success-text="item.successRefreshText"
+        >
           <van-list
             v-model="item.upPullLoading"
             :finished="item.upPullFinished"
             finished-text="没有更多了"
             @load="onLoad"
           >
-            <van-cell v-for="item in activeChannel.articles" :key="item.art_id.toString()" :title="item.title">
+          <!-- item.art_id-->
+            <van-cell
+              v-for="item in activeChannel.articles"
+              :key="item.art_id.toString()"
+              :title="item.title"
+              @click="$router.push({name:'article',params:{articleId:141314}})"
+            >
               <div slot="label">
-                <template >
+                <template>
                   <van-grid :border="false" :column-num="3" v-show="item.cover.type!=0">
                     <van-grid-item v-for="(val,index) in item.cover.images" :key="index">
                       <van-image :src="val" lazy-load />
@@ -35,7 +48,7 @@
                     &nbsp;
                     <span>时间:{{item.pubdate | relativeTime}}</span>
                     &nbsp;
-                  <van-icon name="cross" @click="handleShowMoreAction(item)"/>
+                    <van-icon name="cross" @click="handleShowMoreAction(item)" />
                   </p>
                 </template>
               </div>
@@ -45,7 +58,13 @@
       </van-tab>
     </van-tabs>
     <!-- 更多操作 -->
-    <more-action v-model="isShow" :currentArticle="currentArticle" @dislike-success="handleDislikeSuccess"></more-action>
+    <more-action
+      v-model="isShow"
+      :currentArticle="currentArticle"
+      @dislike-success="handleDislikeSuccess"
+    ></more-action>
+    <!-- 频道编辑 -->
+    <channel v-model="isShowChannel" @delete-success="handleDeleteSuccess" :channels="channels" :activeChannelIndex="activeChannelIndex" @update:active-index="activeChannelIndex=$event"></channel>
   </div>
 </template>
 
@@ -58,24 +77,34 @@ import { getArticles } from '@/api/article.js'
 // 导入 mapstore
 import { mapState } from 'vuex'
 // 导入组件 更多操作
-import MoreAction from '@/views/home/components/more-action.vue'
+import MoreAction from './components/more-action.vue'
+// 导入频道编辑组件
+import Channel from './components/channel.vue'
 
 export default {
   name: 'homeindex',
-  components: { MoreAction },
+  // 注册组件
+  components: {
+    MoreAction,
+    Channel
+  },
   data () {
     return {
       // 默认选中的列表项的下标
-      activeIndex: 0,
+      activeChannelIndex: 0,
       // 列表数据
       list: [],
       loading: false,
       finished: false,
       isLoading: false,
       channels: [],
+      // 更多操作组件默认不显示
       isShow: false,
       // 当前文章
-      currentArticle: null
+      currentArticle: null,
+      // 编辑频道组件默认不显示
+      isShowChannel: false
+      // activeChannelIndex: 0
     }
   },
   created () {
@@ -85,7 +114,7 @@ export default {
     // 声明复杂数据类型
     // 获取当前文章的频道, 当获取当前频道的id，默认选中和id一样,
     activeChannel () {
-      return this.channels[this.activeIndex]
+      return this.channels[this.activeChannelIndex]
     },
     // user
     ...mapState(['user'])
@@ -102,11 +131,32 @@ export default {
     }
   },
   methods: {
+    // 频道改变时，删除激活频道时
+    handleChangeTab () {
+      // 重新加载
+      this.onLoad()
+    },
+    // 父组件绑定被触发的事件，频道手动点击
+    handleDeleteSuccess () {
+      if (!this.activeChannel.articles.length) {
+      // 手动点击tabs
+        this.activeChannel.upPullLoading = true
+        // console.log('----')
+        this.onLoad()
+        // console.log('====')
+      }
+    },
+    // 点击右按钮，编辑频道
+    showChannelManager () {
+      this.isShowChannel = true
+    },
     // 更新视图，将不喜欢的文章删除
     handleDislikeSuccess () {
       // 在所有文章中寻找当前文章的id
       const AllArticles = this.activeChannel.articles
-      const disIndex = AllArticles.findIndex(item => item === this.currentArticle)
+      const disIndex = AllArticles.findIndex(
+        item => item === this.currentArticle
+      )
       // 将该文章对应的文章删除
       AllArticles.splice(disIndex, 1)
     },
@@ -139,6 +189,8 @@ export default {
       //   this.channels = data.channels
       //   console.log(this.channels)
       // }
+      // 调整结构
+      let channels = []
       // 简化
       // 获取本地存储
       const localChannel = JSON.parse(window.localStorage.getItem('channels'))
@@ -147,21 +199,31 @@ export default {
       if (!user && localChannel) {
         this.channels = localChannel
       }
-      // 用户没有登录,获取默认频道 || (没有本地存储 && 登录了)
+      // 没登录 || (没本地&& 登录)
       if (!user || (!localChannel && user)) {
         const data = await getChannels()
         // 设计，创建符合频道要求的新数据
-        data.channels.forEach(item => {
-          item.articles = [] // 当前频道的文章列表所有数据
-          item.downPullLoading = false // 当前频道下拉状态
-          item.upPullLoading = false // 当前频道上拉加载更多
-          item.upPullFinished = false // 当前频道加载完毕
-          item.timestamp = Date.now() // 用来保存每个频道item自己的文章列表数据对应的时间戳
-          item.successRefreshText = '' // 下拉成功的文本提示
-        })
-        this.channels = data.channels
+        // data.channels.forEach(item => {
+        //   item.articles = [] // 当前频道的文章列表所有数据
+        //   item.downPullLoading = false // 当前频道下拉状态
+        //   item.upPullLoading = false // 当前频道上拉加载更多
+        //   item.upPullFinished = false // 当前频道加载完毕
+        //   item.timestamp = Date.now() // 用来保存每个频道item自己的文章列表数据对应的时间戳
+        //   item.successRefreshText = '' // 下拉成功的文本提示
+        // })
+        // this.channels = data.channels
         // console.log(this.channels)
+        channels = data.channels
       }
+      channels.forEach(item => {
+        item.articles = [] // 当前频道的文章列表所有数据
+        item.downPullLoading = false // 当前频道下拉状态
+        item.upPullLoading = false // 当前频道上拉加载更多
+        item.upPullFinished = false // 当前频道加载完毕
+        item.timestamp = Date.now() // 用来保存每个频道item自己的文章列表数据对应的时间戳
+        item.successRefreshText = '' // 下拉成功的文本提示
+      })
+      this.channels = channels
     },
     async onRefresh () {
       // 下拉刷新获取最新数据
@@ -288,5 +350,9 @@ export default {
   // margin-top: 100px;
   // margin-bottom: 92px;
   margin-top: 184px;
+}
+.channels-tabs /deep/ .wap--nav {
+  position: fixed;
+  right: 0;
 }
 </style>

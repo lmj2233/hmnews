@@ -20,7 +20,7 @@
 // import axios from 'axios'
 import { login } from '@/api/user.js'
 // import { setUser } from '@/utils/auth.js'
-import { mapMutations } from 'vuex'
+// import { mapMutations } from 'vuex'
 
 export default {
   name: 'loginindex',

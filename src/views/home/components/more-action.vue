@@ -8,20 +8,26 @@
     >
       <van-cell-group v-if="!isReport">
         <van-cell title="不感兴趣" icon="location-o" @click="handleDislike" />
-        <van-cell title="反馈垃圾内容" icon="location-o" is-link @click="isReport=true"/>
+        <van-cell title="反馈垃圾内容" icon="location-o" is-link @click="isReport=true" />
         <van-cell title="拉黑作者" icon="location-o" />
       </van-cell-group>
 
-      <van-cell-group v-else >
-      <van-cell icon="arrow-left" @click="isReport=false" />
-      <van-cell v-for="item in reportTypes" :key="item.value" :title="item.title"  @click="handleReportArticle(item.value)" icon="location-o" />
-    </van-cell-group>
+      <van-cell-group v-else>
+        <van-cell icon="arrow-left" @click="isReport=false" />
+        <van-cell
+          v-for="item in reportTypes"
+          :key="item.value"
+          :title="item.title"
+          @click="handleReportArticle(item.value)"
+          icon="location-o"
+        />
+      </van-cell-group>
     </van-dialog>
   </div>
 </template>
 
 <script>
-import { dislikeArticle, reportArticle } from '@/api/article.js'
+import { dislikeArticle, reportArticle } from '@/api/article.js';
 export default {
   name: 'MoreAction',
   props: {

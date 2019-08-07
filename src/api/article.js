@@ -1,6 +1,6 @@
-// 获取文章列表
 import request from '@/utils/request.js'
 
+// 获取文章列表
 export const getArticles = ({
   channel_id,
   timestamp,
@@ -29,7 +29,6 @@ export const dislikeArticle = articleID => {
 }
 
 // 举报文章
-
 export const reportArticle = ({ articleID, type, remark = '' }) => {
   return request({
     method: 'POST',
@@ -39,5 +38,13 @@ export const reportArticle = ({ articleID, type, remark = '' }) => {
       type,
       remark
     }
+  })
+}
+
+// 获取文章详情
+export const getArticleByAtrId = article_id => {
+  return request({
+    method: 'GET',
+    url: `/app/v1_0/articles/${article_id}`
   })
 }
