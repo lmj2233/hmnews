@@ -23,6 +23,12 @@
         <span class="count">{{user.like_count}}</span>
         <span class="text">获赞</span>
       </van-grid-item>
+      <!-- 进入聊天室 -->
+       <van-cell class="base-info" is-link :border="false" @click="$router.push({ name: 'chat' })">
+      <div slot="title">
+        <span class="title">用户反馈</span>
+      </div>
+    </van-cell>
     </van-grid>
   </van-cell-group>
 </template>

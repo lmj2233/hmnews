@@ -53,11 +53,12 @@ export default {
   },
 
   methods: {
+    //   两个选一个格式就可以了
     //  更新图片 url格式的图片
     handleUploadSuccess (photo) {
       this.user.photo = photo
     },
-    // base64图片格式
+    // 更新图片 base64图片格式
     handleSetSuccess (base64Img) {
     //   this.base64Img = base64Img
     },

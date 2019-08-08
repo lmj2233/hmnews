@@ -24,7 +24,8 @@ export default new Router({
     { path: '/search', name: 'search', component: () => import('@/views/search') },
     { path: '/search-result/:queryText', name: 'search-result', component: () => import('@/views/search/search-result.vue') },
     { path: '/article/:articleId', name: 'article', component: () => import('@/views/article') },
-    { path: '/user-profile', name: 'user-profile', component: () => import('@/views/mine/components/user-profile.vue') }
+    { path: '/user-profile', name: 'user-profile', component: () => import('@/views/mine/components/user-profile.vue') },
+    { path: '/chat', name: 'chat', component: () => import('@/views/chat') }
 
   ]
 })
